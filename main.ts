@@ -79,7 +79,11 @@ function meanAbsMove(prices: number[], win: number): number {
   return s / take;
 }
 
-/** The forecast of one market: horizon rows of the five quantiles. */
+/** The forecast of one market: horizon rows of the five quantiles.
+ *  The regime ratio is bounded at 5 before the boost is applied: a market
+ *  whose long window is (almost) frozen but which just ticked once would
+ *  otherwise see its sigma boosted toward the cap on the strength of that
+ *  single tick, widening every quantile for a move that may not repeat. */
 function forecast(m: CaseMarket, horizon: number): number[][] {
   if (m.prices.length === 0) throw new Error(`market ${m.id} has no prices`);
   const x = m.prices[m.prices.length - 1] as number;
